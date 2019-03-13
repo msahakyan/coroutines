@@ -19,4 +19,8 @@ val trackingModule = module {
     scope("coders.android.couroutines.ui.DetailActivity") {
         scoped(name = "DetailActivity") { TrackingService(tracker = get()) }
     }
+
+    scope("coders.android.couroutines.ui.NewsActivity") {
+        scoped(name = "NewsActivity") { TrackingService(tracker = get()) }
+    }
 }

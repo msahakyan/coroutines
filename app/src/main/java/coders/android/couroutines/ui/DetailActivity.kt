@@ -1,5 +1,6 @@
 package coders.android.couroutines.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -7,6 +8,7 @@ import coders.android.bi_tracking.service.TrackingService
 import coders.android.couroutines.R
 import coders.android.couroutines.viewmodel.UserViewModel
 import com.bumptech.glide.RequestManager
+import kotlinx.android.synthetic.main.activity_detail.action_news
 import kotlinx.android.synthetic.main.activity_detail.detail_avatar
 import kotlinx.android.synthetic.main.activity_detail.error_container
 import kotlinx.android.synthetic.main.activity_detail.progress
@@ -32,6 +34,9 @@ class DetailActivity : AppCompatActivity() {
         bindScope(getActivityScope())
         login = intent.getStringExtra(KEY_USER_LOGIN)
         observeUser()
+        action_news.setOnClickListener {
+            Intent(this@DetailActivity, NewsActivity::class.java).also { startActivity(it) }
+        }
     }
 
     override fun onResume() {

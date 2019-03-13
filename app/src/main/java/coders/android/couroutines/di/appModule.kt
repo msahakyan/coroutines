@@ -1,7 +1,6 @@
 package coders.android.couroutines.di
 
 import android.content.Context
-import coders.android.couroutines.repository.UserRepository
 import coders.android.couroutines.viewmodel.FeedViewModel
 import coders.android.couroutines.viewmodel.UserListViewModel
 import coders.android.couroutines.viewmodel.UserViewModel

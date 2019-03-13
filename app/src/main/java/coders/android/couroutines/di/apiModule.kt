@@ -8,6 +8,7 @@ import coders.android.couroutines.api.UserApi
 import coders.android.couroutines.repository.NetworkConfig
 import coders.android.couroutines.repository.NewsRepository
 import coders.android.couroutines.repository.UserRepository
+import coders.android.couroutines.ui.NewsActivity
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,20 +39,24 @@ val apiModule = module {
     }
 
     // News
-    single(name = "news") { NetworkConfig.News.BASE_URL }
+    scope<NewsActivity> {
 
-    single {
-        createWebService<NewsApi>(
-            okHttpClient = get(),
-            url = get(name = "news")
-        )
+        single(name = "news") { NetworkConfig.News.BASE_URL }
+
+        single {
+            createWebService<NewsApi>(
+                okHttpClient = get(),
+                url = get(name = "news")
+            )
+        }
+
+        single {
+            NewsRepository(
+                newsApi = get()
+            )
+        }
     }
 
-    single {
-        NewsRepository(
-            newsApi = get()
-        )
-    }
 }
 
 private fun createOkHttpClient(): OkHttpClient {
