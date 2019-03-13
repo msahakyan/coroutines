@@ -11,7 +11,7 @@ import coders.android.couroutines.repository.UserRepository
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
@@ -21,48 +21,43 @@ val apiModule = module {
 
     single { createOkHttpClient() }
 
-    /////////////////////////////////////////////////
-    ///////////////////   GITHUB   //////////////////
-    /////////////////////////////////////////////////
+    // Github
+    single(name = "github") { NetworkConfig.Github.BASE_URL }
 
-    single("github") { NetworkConfig.Github.BASE_URL }
-
-    single("github") {
+    single {
         createWebService<UserApi>(
             okHttpClient = get(),
-            url = get("github")
+            url = get(name = "github")
         )
     }
 
     single {
         UserRepository(
-            userApi = get("github")
+            userApi = get()
         )
     }
 
-    /////////////////////////////////////////////////
-    /////////////////   NEWS API   //////////////////
-    /////////////////////////////////////////////////
+    // News
+    single(name = "news") { NetworkConfig.News.BASE_URL }
 
-    single("news") { NetworkConfig.News.BASE_URL }
-
-    single("news") {
+    single {
         createWebService<NewsApi>(
             okHttpClient = get(),
-            url = get("news")
+            url = get(name = "news")
         )
     }
 
     single {
         NewsRepository(
-            newsApi = get("news")
+            newsApi = get()
         )
     }
 }
 
 private fun createOkHttpClient(): OkHttpClient {
-    val httpLoggingInterceptor = HttpLoggingInterceptor()
-    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+    val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BASIC
+    }
     return OkHttpClient.Builder()
         .connectTimeout(NetworkConfig.Timeout.CONNECTION, TimeUnit.SECONDS)
         .readTimeout(NetworkConfig.Timeout.READ, TimeUnit.SECONDS)

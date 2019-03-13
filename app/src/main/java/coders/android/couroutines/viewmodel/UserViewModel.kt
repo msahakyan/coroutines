@@ -14,7 +14,7 @@ import timber.log.Timber
  * @author msahakyan.
  */
 class UserViewModel(
-    val userRepository: UserRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val mutableState = MutableLiveData<UserState>()

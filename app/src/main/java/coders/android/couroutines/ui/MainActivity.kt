@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import coders.android.bi_tracking.service.TrackingService
 import coders.android.couroutines.R
 import coders.android.couroutines.viewmodel.UserListViewModel
 import com.bumptech.glide.RequestManager
@@ -13,17 +14,22 @@ import kotlinx.android.synthetic.main.activity_main.error_container
 import kotlinx.android.synthetic.main.activity_main.progress
 import kotlinx.android.synthetic.main.activity_main.recycler_view
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.scope.bindScope
+import org.koin.androidx.scope.getActivityScope
+import org.koin.androidx.viewmodel.ext.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<UserListViewModel>()
     private val glide by inject<RequestManager>()
+    private val tracingService by getActivityScope().inject<TrackingService>(name = "MainActivity")
     private lateinit var adapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // bind "activity" scope to component lifecycle
+        bindScope(getActivityScope())
         setupAdapter()
         observeUsers()
     }
@@ -38,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.fetchUsers(perPage = 50)
+        tracingService.trackEvent(MainActivity::class.java.simpleName)
     }
 
     private fun onItemCLick(login: String?) {
